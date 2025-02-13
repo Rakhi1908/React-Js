@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Movie List</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+    <h3>Movie</h3>
+    <form id="movieForm" enctype="multipart/form-data">
+        <input type="hidden" id="movieId">
+        <input type="text" id="title" name="title" placeholder="Title" required>
+        <input type="text" id="description" name="description" placeholder="Description" required>
+        <input type="number" id="releaseYear" name="releaseYear" placeholder="Release Year" required>
+        <input type="file" id="image" name="image" accept="image/*">
+        <button type="submit">Save</button>
+    </form>
+    
+    <h2>Movie List</h2>
+    
+    <table border="1">                                     
+        <tr>
+            <th>Title</th>
+            <th>Description</th>
+            <th>Release Year</th>
+            <th>Image</th>
+            <th>Actions</th>
+        </tr>
+        <% movies.forEach(movie => { %>
+            <tr>
+                <td><%= movie.title %></td>
+                <td><%= movie.description %></td>
+                <td><%= movie.releaseYear %></td>
+                <td><img src="/uploads/<%= movie.image %>" width="100" alt="Movie Image"></td>
+                <td>
+                    <button onclick="deleteMovie('<%= movie._id %>')">Delete</button>
+                    <button onclick="editMovie('<%= movie._id %>', '<%= movie.title %>', '<%= movie.description %>', '<%= movie.releaseYear %>', '<%= movie.image %>')">Edit</button>
+                </td> 
+            </tr>
+        <% }) %>
+    </table>
+
+   
+
+    <script>
+        async function deleteMovie(id) {
+            const res = await fetch(`/movies/delete/${id}`, { method: 'DELETE' });
+            if (res.ok) window.location.reload();
+        }
+
+        function editMovie(id, title, description, releaseYear, image) {
+            document.getElementById("movieId").value = id;
+            document.getElementById("title").value = title;
+            document.getElementById("description").value = description;
+            document.getElementById("releaseYear").value = releaseYear;
+        }
+
+        document.getElementById("movieForm").addEventListener("submit", async function (e) {
+            e.preventDefault();
+            
+            const formData = new FormData();
+            formData.append("title", document.getElementById("title").value);
+            formData.append("description", document.getElementById("description").value);
+            formData.append("releaseYear", document.getElementById("releaseYear").value);
+            if (document.getElementById("image").files[0]) {
+                formData.append("image", document.getElementById("image").files[0]);
+            }
+
+            const id = document.getElementById("movieId").value;
+            const url = id ? `/movies/update/${id}` : "/movies/add";
+            const method = id ? "PUT" : "POST";
+
+            const res = await fetch(url, { method, body: formData });
+            if (res.ok) window.location.reload();
+        });
+    </script>
+
+</body>
+</html>
