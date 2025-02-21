@@ -1,12 +1,16 @@
-// Database Connection
-const mongoose = require("mongoose");
-mongoose.connect("mongodb://localhost:27017/movies");
+const mongoose=require("mongoose")
 
-const db = mongoose.connection;
+mongoose.connect("mongodb://localhost:27017/cookies")
 
-db.on("connected", () => {
-    console.log("Database connected");
-});
-db.on("error", (err) => {
-    console.log("Database connection error", err);
-});
+const db=mongoose.connection;
+
+
+db.on("connected",(err,data)=>{
+    if(err)
+    {
+        console.log("err")
+    }
+    else{
+        console.log("database connect")
+    }
+})
