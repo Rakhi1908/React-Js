@@ -1,17 +1,20 @@
-const express = require("express");
-const path = require("path");
+const express = require('express');
 const app = express();
-const db = require("./config/db");
-const route = require("./router/userRouter");
+const db = require('./config/db');
+const { router } = require('./router/userRouter');
+const passport = require('passport')
+const session = require('express-session');
+const { localAuth } = require('./Middleware/localAuth');
 
-app.set("view engine", "ejs");
-app.set("views", path.join(__dirname, "views"));
+app.set('view engine', 'ejs');
+app.use(express.json())
+app.use(session({ secret: 'keyboard cat'}));
+app.use(passport.initialize());
+app.use(passport.session());
+localAuth(passport)
+app.use(express.urlencoded());
+app.use("/",router)
 
-app.use(express.static("public"));  
-app.use(express.json());
-app.use("/movies", route);
-app.use("/uploads", express.static(path.join(__dirname, "uploads"))); 
-
-app.listen(8000, () => {
-    console.log("Server is running on port 8000");
-});
+app.listen('5600',()=>{
+    console.log('Server listen on 5600...');
+})

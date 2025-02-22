@@ -1,16 +1,13 @@
-const mongoose=require("mongoose")
+const mongoose = require('mongoose');
 
-mongoose.connect("mongodb://localhost:27017/cookies")
+mongoose.connect("mongodb://localhost:27017/passport");
 
-const db=mongoose.connection;
+const db = mongoose.connection;
 
-
-db.on("connected",(err,data)=>{
-    if(err)
-    {
-        console.log("err")
-    }
-    else{
-        console.log("database connect")
+db.on("connection",(err,data)=>{
+    if(err){
+        console.log(err);
+    }else{
+        console.log("data..");
     }
 })
